@@ -1,5 +1,5 @@
-import { KeyboardAvoidingView, Platform, StyleSheet, useColorScheme } from 'react-native';
-import { useState } from 'react';
+import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, useColorScheme } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
 import { Colors, Fonts } from '../constants/theme'; 
 import Messages from './Messages';
 import Input from './Input';
@@ -14,15 +14,22 @@ export default function ChatScreen() {
   const [input, setInput] = useState('');
   const colorScheme = useColorScheme(); 
   const theme = Colors[colorScheme || 'light'];
+  const flatListRef = useRef<FlatList>(null);
+
+  useEffect(() => {
+    flatListRef.current?.scrollToEnd({ animated: true });
+  }, [messages]);
 
   const sendMessage = () => {
     if (!input.trim()) return;
+
     setMessages([...messages, { text: input, isUser: true }]);
     setInput('');
 
     setTimeout(() => {
       setMessages(prev => [...prev, { text: `Бот відповідає: ${input}`, isUser: false }]);
-    }, 500);
+    }, 200);
+
   };
 
   return (
@@ -32,9 +39,9 @@ export default function ChatScreen() {
       keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
     >
 
-      <Messages messages={messages}/>
+      <Messages messages={messages} ref={flatListRef}/>
       <Input sendMessage={sendMessage} input={input} setInput={setInput}/>
-      
+
     </KeyboardAvoidingView>
   );
 }

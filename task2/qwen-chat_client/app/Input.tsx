@@ -1,5 +1,6 @@
-import { Text, TextInput, TouchableOpacity, View, StyleSheet, useColorScheme } from "react-native";
+import { Image, Text, TextInput, TouchableOpacity, View, StyleSheet, useColorScheme } from "react-native";
 import { Colors, Fonts } from '../constants/theme'; 
+import sendIcon from '../assets/send-white-icon.png';
 
 type Props = {
     input: string;
@@ -10,7 +11,7 @@ type Props = {
 
 const Input = ({input, setInput, sendMessage} : Props) => {
     const colorScheme = useColorScheme(); 
-    const theme = Colors[colorScheme || 'light'];
+    const theme = Colors[colorScheme || 'dark'];
 
     return (
       <View style={[styles.inputContainer, { borderTopColor: theme.icon, backgroundColor: theme.background }]}>
@@ -28,7 +29,9 @@ const Input = ({input, setInput, sendMessage} : Props) => {
           ]}
         />
         <TouchableOpacity onPress={sendMessage} style={[styles.sendButton, { backgroundColor: theme.tint }]}>
-          <Text style={styles.sendText}>Send</Text>
+          <Text style={styles.sendText}>
+            <Image source={sendIcon} style={{ width: 16, height: 16 }} />
+          </Text>
         </TouchableOpacity>
       </View>
     );
@@ -38,7 +41,6 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     padding: 8,
-    borderTopWidth: 1,
     alignItems: 'center',
     marginBottom:25,
   },
@@ -53,7 +55,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   sendButton: { paddingVertical: 10, paddingHorizontal: 16, borderRadius: 20 },
-  sendText: { color: '#fff', fontWeight: 'bold' },
+  sendText: { color: '#fff', fontWeight: 'bold', padding: 2 },
 });
 
 export default Input;
