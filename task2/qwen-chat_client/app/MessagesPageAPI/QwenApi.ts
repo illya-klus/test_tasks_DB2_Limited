@@ -5,16 +5,27 @@ const ai = new GoogleGenAI({
   apiKey: GEMINI_API_KEY,
 });
 
-export async function sendToGemini(message: string): Promise<string> {
+type Role = "system" | "user" | "assistant";
+
+export async function sendToGeminiWithContext(
+  messages: { role: Role; content: string }[]
+): Promise<string> {
   try {
+    // Генеруємо масив Content для Gemini
+    const contents = messages.map(msg => ({
+      type: "text",       // обов’язково має бути "text"
+      text: msg.content   // сам текст повідомлення
+    }));
+
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
-      contents: message,
+      contents
     });
 
-    return response.text ?? "Наразі я маю проблеми з відповіддю. Спробуй ще раз через кілька хвилин.";
+    return response.text ?? "Проблема з відповіддю AI. Спробуй ще раз.";
   } catch (error) {
     console.error("Gemini API error:", error);
     return "Помилка при звʼязку з AI. Спробуй ще раз.";
   }
 }
+

@@ -1,9 +1,9 @@
-import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, useColorScheme } from 'react-native';
+import { FlatList, KeyboardAvoidingView, Platform, Role, StyleSheet, useColorScheme } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import { Colors } from '../constants/theme'; 
 import Messages from './MessagesPageComponents/Messages';
 import Input from './MessagesPageComponents/Input';
-import { sendToGemini } from './MessagesPageAPI/QwenApi';
+import { sendToGeminiWithContext } from './MessagesPageAPI/QwenApi';
 
 
 export type Message = {
@@ -27,12 +27,25 @@ export default function ChatScreen() {
 
   const sendMessage = async () => {
     if (!input.trim()) return;
-
-    setMessages([...messages, { text: input, isUser: true }]);
+  
+    // Додаємо повідомлення користувача
+    setMessages(prev => [...prev, { text: input, isUser: true }]);
     setInput('');
-
     setTyping('type');
-    let ans = await sendToGemini(input);
+  
+    // Формуємо масив для API
+    const geminiMessages = messages.map(msg => ({
+      role: msg.isUser ? "user" as const : "assistant" as const, // <-- привід до Role
+      content: msg.text
+    }));
+  
+    // Додаємо нове повідомлення користувача
+    geminiMessages.push({ role: "user" as const, content: input });
+  
+    // Викликаємо API
+    const ans = await sendToGeminiWithContext(geminiMessages);
+  
+    // Додаємо відповідь бота
     setMessages(prev => [...prev, { text: ans, isUser: false }]);
     setTyping('none');
   };
