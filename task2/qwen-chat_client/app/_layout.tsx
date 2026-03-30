@@ -7,7 +7,7 @@ export default function RootLayout() {
 
       <Stack.Screen 
         name="index" 
-        options={{ title: 'Qwen Chat', headerShown: true }} 
+        options={{ title: 'Gemini', headerShown: true }} 
       />
 
       <Stack.Screen 

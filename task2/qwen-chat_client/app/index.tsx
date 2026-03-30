@@ -1,8 +1,10 @@
 import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, useColorScheme } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
-import { Colors, Fonts } from '../constants/theme'; 
-import Messages from './Messages';
-import Input from './Input';
+import { Colors } from '../constants/theme'; 
+import Messages from './MessagesPageComponents/Messages';
+import Input from './MessagesPageComponents/Input';
+import { sendToGemini } from './MessagesPageAPI/QwenApi';
+
 
 export type Message = {
   text: string; 
@@ -20,16 +22,15 @@ export default function ChatScreen() {
     flatListRef.current?.scrollToEnd({ animated: true });
   }, [messages]);
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (!input.trim()) return;
 
     setMessages([...messages, { text: input, isUser: true }]);
     setInput('');
 
-    setTimeout(() => {
-      setMessages(prev => [...prev, { text: `Бот відповідає: ${input}`, isUser: false }]);
-    }, 200);
+    let ans = await sendToGemini(input);
 
+    setMessages(prev => [...prev, { text: ans, isUser: false }]);
   };
 
   return (

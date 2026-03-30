@@ -1,6 +1,6 @@
 import { Image, Text, TextInput, TouchableOpacity, View, StyleSheet, useColorScheme } from "react-native";
-import { Colors, Fonts } from '../constants/theme'; 
-import sendIcon from '../assets/send-white-icon.png';
+import { Colors, Fonts } from '../../constants/theme'; 
+import sendIcon from '../../assets/send-white-icon.png';
 
 type Props = {
     input: string;

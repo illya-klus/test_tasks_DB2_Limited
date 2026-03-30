@@ -1,6 +1,6 @@
 import { View, Text,  StyleSheet, FlatList, useColorScheme } from 'react-native';
-import { Colors, Fonts } from '../constants/theme'; 
-import { Message } from '.';
+import { Colors, Fonts } from '../../constants/theme'; 
+import { Message } from '..';
 
 
 type Props = {
@@ -16,12 +16,12 @@ const Messages = ({messages, ref} : Props) => {
         data={messages}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={{ padding: 12 }}
-        renderItem={({ item }) => (<Message item={item} />)}
+        renderItem={({ item }) => (<MessageItem item={item} />)}
     />
   );
 }
 
-const Message = ({item} : {item : Message}) => {
+const MessageItem = ({item} : {item : Message}) => {
   const colorScheme = useColorScheme(); 
   const theme = Colors[colorScheme || 'light'];
 
