@@ -11,12 +11,15 @@ export type Message = {
   isUser: boolean
 }
 
+export type Typings = 'type' | 'none';
+
 export default function ChatScreen() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const colorScheme = useColorScheme(); 
   const theme = Colors[colorScheme || 'light'];
   const flatListRef = useRef<FlatList>(null);
+  const [isTyping, setTyping] = useState<Typings>('none');
 
   useEffect(() => {
     flatListRef.current?.scrollToEnd({ animated: true });
@@ -28,9 +31,10 @@ export default function ChatScreen() {
     setMessages([...messages, { text: input, isUser: true }]);
     setInput('');
 
+    setTyping('type');
     let ans = await sendToGemini(input);
-
     setMessages(prev => [...prev, { text: ans, isUser: false }]);
+    setTyping('none');
   };
 
   return (
@@ -40,7 +44,7 @@ export default function ChatScreen() {
       keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
     >
 
-      <Messages messages={messages} ref={flatListRef}/>
+      <Messages messages={messages} ref={flatListRef} isTyping={isTyping} />
       <Input sendMessage={sendMessage} input={input} setInput={setInput}/>
 
     </KeyboardAvoidingView>
